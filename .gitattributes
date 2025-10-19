@@ -1,2 +1,92 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+#This code is from scalar's doc
+#Link:https://www.youtube.com/watch?v=WIz6PppzYZE
+
+from sys import maxsize
+from itertools import permutations
+V = 4
+
+def travellingSalesmanProblem(graph, s):
+	vertex = []
+	for i in range(V):
+		if i != s:
+			vertex.append(i)
+
+	min_path = maxsize
+	next_permutation=permutations(vertex)
+	for i in next_permutation:
+		current_pathweight = 0
+		k = s
+		for j in i:
+			current_pathweight += graph[k][j]
+			k = j
+		current_pathweight += graph[k][s]
+		min_path = min(min_path, current_pathweight)
+		
+	return min_path
+
+
+if __name__ == "__main__":
+	graph = [[0, 10, 15, 20], [10, 0, 35, 25],
+			[15, 35, 0, 30], [20, 25, 30, 0]]
+	s = 0
+	print(travellingSalesmanProblem(graph, s))
+	
+	
+#Improved by Chat GPT
+# and then modified using chat gpt
+
+
+from sys import maxsize
+from itertools import permutations
+
+V = 4  # Number of vertices (cities)
+
+def travellingSalesmanProblem(graph, s):
+    # List of all vertices except the starting point
+    vertex = [i for i in range(V) if i != s]
+
+    min_path = maxsize
+    best_route = []
+
+    # Try every possible permutation of cities
+    for perm in permutations(vertex):
+        current_pathweight = 0
+        k = s
+        route = [s]  # start city
+
+        # Calculate path cost
+        for j in perm:
+            current_pathweight += graph[k][j]
+            k = j
+            route.append(j)
+
+        # Return to the starting point
+        current_pathweight += graph[k][s]
+        route.append(s)
+
+        # Update minimum path and route
+        if current_pathweight < min_path:
+            min_path = current_pathweight
+            best_route = route
+
+    return min_path, best_route
+
+
+if __name__ == "__main__":
+    # Example graph (symmetric matrix)
+    graph = [
+        [0, 10, 15, 20],
+        [10, 0, 35, 25],
+        [15, 35, 0, 30],
+        [20, 25, 30, 0]
+    ]
+
+    s = 0  # starting city
+    min_cost, best_route = travellingSalesmanProblem(graph, s)
+
+    print("Minimum cost:", min_cost)
+    print("Optimal route:", " -> ".join(map(str, best_route)))
+
